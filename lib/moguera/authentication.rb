@@ -1,6 +1,4 @@
-require "moguera/authentication/version"
-
 module Moguera
-  module Authentication
+  class Authentication
   end
 end

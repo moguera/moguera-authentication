@@ -1,5 +1,5 @@
 module Moguera
-  module Authentication
-    VERSION = "0.0.1"
+  class Authentication
+    VERSION = "0.0.0"
   end
 end

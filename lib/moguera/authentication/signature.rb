@@ -1,7 +1,7 @@
 module Moguera
   class Authentication
     class Signature
-      def initialize(apikey, secret, path: nil, method: nil, content_type: nil)
+      def initialize(apikey:, secret:, path:, method:, content_type:)
         require 'time'
         require 'openssl'
         require 'base64'

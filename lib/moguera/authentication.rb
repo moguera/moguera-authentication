@@ -2,8 +2,14 @@ require 'moguera/authentication/signature'
 
 module Moguera
   class Authentication
-    def initialize(apikey, secret, path: nil, method: nil, content_type: nil)
-      @signature = Signature.new(apikey, secret, method: method, path: path, content_type: content_type)
+    def initialize(apikey:, secret:, path:, method:, content_type:)
+      @signature = Signature.new(
+          apikey: apikey,
+          secret: secret,
+          method: method,
+          path: path,
+          content_type: content_type
+      )
     end
 
     def apikey

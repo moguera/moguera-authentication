@@ -4,6 +4,7 @@ module Moguera
       def initialize(apikey, secret, path: nil, method: nil, content_type: nil)
         require 'time'
         require 'openssl'
+        require 'base64'
 
         @apikey = apikey
         @secret = secret
@@ -22,7 +23,7 @@ module Moguera
 
       def signature
         digest = OpenSSL::Digest::SHA256.new
-        OpenSSL::HMAC.hexdigest(digest, @secret, seed)
+        Base64.encode64(OpenSSL::HMAC.hexdigest(digest, @secret, seed))
       end
 
       def seed

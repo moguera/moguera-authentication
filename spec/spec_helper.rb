@@ -1,18 +1,22 @@
 require "bundler/setup"
-Bundler.require :default
+Bundler.require :test
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), %w(.. lib)))
 
-require 'moguera/authentication'
-require 'timecop'
-require 'simplecov'
-require 'simplecov-rcov'
+if ENV['COVERAGE'] == 'on'
+  require 'simplecov'
+  require 'simplecov-rcov'
 
-SimpleCov.start do
-  add_filter 'spec'
+  class SimpleCov::Formatter::MergedFormatter
+    def format(result)
+      SimpleCov::Formatter::HTMLFormatter.new.format(result)
+      SimpleCov::Formatter::RcovFormatter.new.format(result)
+    end
+  end
+  SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
+  SimpleCov.start { add_filter 'spec' }
 end
-SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
 
 RSpec.configure do |config|
 
@@ -39,4 +43,5 @@ RSpec.configure do |config|
   end
 end
 
+require 'moguera/authentication'
 require 'shared_context'

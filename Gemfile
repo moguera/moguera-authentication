@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :test do
+  gem 'timecop'
   gem 'pry'
   gem 'pry-byebug'
   gem 'simplecov'

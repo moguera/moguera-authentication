@@ -30,11 +30,16 @@ Use paramas
 
 ```ruby
 string_to_isgn = access_key + request_path + request_method + http_date + conetnt_type
-signature = Baes64.encode64(OpenSSL::HMAC.hexdigest(sha1, @secret_access_key, string_to_sign)
+signature = Baes64.encode64(OpenSSL::HMAC.hexdigest(sha1, secret_access_key, string_to_sign)
 
 Authorization header
 Authorization: MOGUERA + " " + access_key + ":" + signature
 ```
+
+Server check
+
+1. Same request_token and server_token?
+2. Expired the request?
 
 ## Usage
 
@@ -118,3 +123,9 @@ end
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Copyright
+
+Copyright (c) 2014 hiro-su.
+
+MIT License

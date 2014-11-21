@@ -18,6 +18,24 @@ Or install it yourself as:
 
     $ gem install moguera-authentication
 
+## Authentication Logic
+Use paramas
+
+- access_key
+- secret_access_key
+- request_pah
+- request_method
+- http_date
+- content_type
+
+```ruby
+string_to_isgn = access_key + request_path + request_method + http_date + conetnt_type
+signature = Baes64.encode64(OpenSSL::HMAC.hexdigest(sha1, @secret_access_key, string_to_sign)
+
+Authorization header
+Authorization: MOGUERA + " " + access_key + ":" + signature
+```
+
 ## Usage
 
 ### Server

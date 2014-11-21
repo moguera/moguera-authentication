@@ -13,7 +13,7 @@ module Moguera
       @allow_time_interval = allow_time_interval || 600
     end
 
-    def authenticate(&block)
+    def authenticate!(&block)
       raise BlockRequired, 'Request token required.' unless block_given?
 
       _, apikey_signature = @token.split

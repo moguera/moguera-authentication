@@ -17,7 +17,7 @@ describe Moguera::Authentication do
 
   describe "#authenticate" do
     it 'should be authenticate' do
-      user = subject.authenticate do |request_key|
+      user = subject.authenticate! do |request_key|
         Moguera::Authentication::Request.new(
             access_key: request_key,
             secret_access_key: secret_access_key,
@@ -39,7 +39,7 @@ describe Moguera::Authentication do
 
       it 'should be raise AuthenticationError with invalid token message' do
         expect {
-          Moguera::Authentication.new('Invalid token:signature').authenticate { request }
+          Moguera::Authentication.new('Invalid token:signature').authenticate! { request }
         }.to eq raise_error(Moguera::Authentication::AuthenticationError, 'Invalid token.')
       end
     end

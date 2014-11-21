@@ -10,3 +10,8 @@ group :test do
   gem 'simplecov'
   gem 'simplecov-rcov'
 end
+
+group :development do
+  gem 'rest-client'
+  gem 'sinatra'
+end

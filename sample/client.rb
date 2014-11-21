@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), %w(.. lib)))
 
@@ -8,10 +10,7 @@ require 'json'
 require 'uri'
 
 url = ARGV[0]
-
-unless url
-  abort 'Usage: ruby client.rb http://localhost:4567/login'
-end
+abort 'Usage: ruby client.rb http://localhost:4567/login' unless url
 
 request_path = URI.parse(url).path
 request_method = 'POST'

@@ -39,8 +39,14 @@ describe Moguera::Authentication do
 
       it 'should be raise AuthenticationError with invalid token message' do
         expect {
-          Moguera::Authentication.new('Invalid token:signature').authenticate! { request }
-        }.to eq raise_error(Moguera::Authentication::AuthenticationError, 'Invalid token.')
+          Moguera::Authentication.new('invalid_token').authenticate! { request }
+        }.to raise_error(Moguera::Authentication::AuthenticationError, 'Invalid token.')
+      end
+
+      it 'should be raise AuthenticationError with mismatch token message' do
+        expect {
+          Moguera::Authentication.new('Mismatch token:signature').authenticate! { request }
+        }.to raise_error(Moguera::Authentication::AuthenticationError, 'Mismatch token.')
       end
     end
   end

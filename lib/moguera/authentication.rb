@@ -26,15 +26,7 @@ module Moguera
     rescue AuthenticationError => e
       authentication_error = AuthenticationError.new(e.message)
       authentication_error.request_token = @request_token
-      if server_request
-        authentication_error.server_token = server_request.token
-        authentication_error.access_key = server_request.access_key
-        authentication_error.secret_access_key = server_request.secret_access_key
-        authentication_error.request_method = server_request.request_method
-        authentication_error.request_path = server_request.request_path
-        authentication_error.content_type = server_request.content_type
-        authentication_error.http_date = server_request.http_date
-      end
+      authentication_error.server_request = server_request if server_request
       raise authentication_error
     end
 

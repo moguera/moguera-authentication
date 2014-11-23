@@ -26,10 +26,12 @@ post '/login' do
     halt 400, "400 Bad Request: #{e.message}\n"
   rescue Moguera::Authentication::AuthenticationError => e
     params = %w(
-      request_token server_token access_key secret_access_key
-      request_method request_path content_type http_date
+      token access_key secret_access_key http_date
+      request_method request_path content_type
     )
-    logger.error params.map {|k| "#{k}: #{e.send(k)}" } * "\n"
+    msg = ["request_tooken: #{e.request_token}"]
+    msg << params.map {|k| "server_#{k}: #{e.server_request.send(k)}" }
+    logger.error msg * "\n"
     halt 401, "401 Unauthorized: #{e.message}\n"
   end
 end

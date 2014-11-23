@@ -2,6 +2,9 @@
 
 Simple REST API Authentication.
 
+[![Build Status](https://travis-ci.org/moguera/moguera-authentication.svg)](https://travis-ci.org/moguera/moguera-authentication)
+[![Coverage Status](https://coveralls.io/repos/moguera/moguera-authentication/badge.png)](https://coveralls.io/r/moguera/moguera-authentication)
+
 ## Installation
 
 Add this line to your application's Gemfile:

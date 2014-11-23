@@ -9,6 +9,7 @@ group :test do
   gem 'pry-byebug'
   gem 'simplecov'
   gem 'simplecov-rcov'
+  gem 'coveralls'
 end
 
 group :development do

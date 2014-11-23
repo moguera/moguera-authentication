@@ -4,19 +4,12 @@ Bundler.require :test
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), %w(.. lib)))
 
-if ENV['COVERAGE'] == 'on'
-  require 'simplecov'
-  require 'simplecov-rcov'
-
-  class SimpleCov::Formatter::MergedFormatter
-    def format(result)
-      SimpleCov::Formatter::HTMLFormatter.new.format(result)
-      SimpleCov::Formatter::RcovFormatter.new.format(result)
-    end
-  end
-  SimpleCov.formatter = SimpleCov::Formatter::MergedFormatter
-  SimpleCov.start { add_filter 'spec' }
-end
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::RcovFormatter,
+  Coveralls::SimpleCov::Formatter
+]
+SimpleCov.start { add_filter 'spec' }
 
 RSpec.configure do |config|
 

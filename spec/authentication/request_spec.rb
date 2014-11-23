@@ -53,19 +53,47 @@ describe Moguera::Authentication::Request do
     end
   end
 
+  describe '#signature' do
+    it 'should be create the signature' do
+      _, access_key_signature = subject.token.split
+      _, signature = access_key_signature.split(':')
+
+      expect(subject.send(:signature)).to eq signature
+    end
+  end
+
+  describe '#string_to_sign' do
+    it 'should be create the string_to_sign' do
+      string_to_sign = access_key + request_path + request_method + http_date + content_type
+
+      expect(subject.send(:string_to_sign)).to eq string_to_sign
+    end
+  end
+
   describe 'Invalid Parameter' do
-    it 'should be raise ParameterInvalid Exception' do
-      error = "Missing: Access Key, Secret Access Key, Request Path, Date Header, Content-Type Header"
-      expect {
-        Moguera::Authentication::Request.new(
-            access_key: nil,
-            secret_access_key: nil,
-            request_path: nil,
-            request_method: nil,
-            http_date: nil,
-            content_type: nil
-        )
-      }.to raise_error(Moguera::Authentication::ParameterInvalid, error)
+    describe 'request parameter is nil' do
+      it 'should be raise ParameterInvalid Exception' do
+        error = "Missing: Access Key, Secret Access Key, Request Path, Date Header, Content-Type Header"
+        expect {
+          Moguera::Authentication::Request.new(
+              access_key: nil,
+              secret_access_key: nil,
+              request_path: nil,
+              request_method: nil,
+              http_date: nil,
+              content_type: nil
+          )
+        }.to raise_error(Moguera::Authentication::ParameterInvalid, error)
+      end
+    end
+
+    describe 'token_prefix is nil' do
+      it 'should be raise ParameterInvalid Exception' do
+        subject.token_prefix = nil
+        expect {
+          subject.token
+        }.to raise_error(Moguera::Authentication::ParameterInvalid, 'Token prefix required.')
+      end
     end
   end
 end

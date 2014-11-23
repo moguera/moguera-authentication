@@ -54,19 +54,25 @@ module Moguera
       unless server_token == request_token
         raise AuthenticationError, 'Mismatch token.'
       end
+
+      true
     end
 
     def validate_time!(request_time:)
       return true if @allow_time_interval.nil?
 
-      raise ParameterInvalid, 'Please input a positive value.' if @allow_time_interval <= 0
+      if @allow_time_interval <= 0
+        raise ParameterInvalid, 'Please input a positive value.'
+      end
 
       rt = Time.parse(request_time).to_i
       interval = (Time.now.to_i - rt).abs
 
-      if interval >= @allow_time_interval
+      if @allow_time_interval <= interval
         raise AuthenticationError, 'Expired request.'
       end
+
+      true
     end
   end
 end

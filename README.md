@@ -3,7 +3,8 @@
 Simple REST API Authentication.
 
 [![Build Status](https://travis-ci.org/moguera/moguera-authentication.svg)](https://travis-ci.org/moguera/moguera-authentication)
-[![Coverage Status](https://coveralls.io/repos/moguera/moguera-authentication/badge.png)](https://coveralls.io/r/moguera/moguera-authentication)
+[![Coverage Status](https://coveralls.io/repos/moguera/moguera-authentication/badge.png?branch=master)](https://coveralls.io/r/moguera/moguera-authentication?branch=master)
+
 
 ## Installation
 

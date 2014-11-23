@@ -26,10 +26,8 @@ request = Moguera::Authentication::Request.new(
     content_type: content_type
 )
 
-request_token = request.token
-
 headers = {
-    Authorization: request_token,
+    Authorization: request.token,
     content_type: content_type,
     Date: http_date
 }

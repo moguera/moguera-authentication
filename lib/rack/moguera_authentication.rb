@@ -7,7 +7,7 @@ module Rack
   #   # Add Rack::MogueraAuthentication somewhere in your rack stack
   #   use Rack::MogueraAuthentication do |request_access_key|
   #
-  #     # Search a secret_access_key by request_access_key
+  #     # Search a secret_access_key by a request_access_key
   #     key_to_secret(request_access_key)
   #   end
   class MogueraAuthentication
@@ -17,12 +17,18 @@ module Rack
     end
 
     def call(env)
-      request_token = Moguera::Authentication.new(env['HTTP_AUTHORIZATION'])
-      request_token.authenticate! do |key|
-        secret = @secret_block.call(key)
-        params = build_parameter(key, secret, env)
+      begin
+        request_token = Moguera::Authentication.new(env['HTTP_AUTHORIZATION'])
+        user = request_token.authenticate! do |key|
+          secret = @secret_block.call(key)
+          params = build_parameter(key, secret, env)
 
-        Moguera::Authentication::Request.new(params)
+          Moguera::Authentication::Request.new(params)
+        end
+
+        env['moguera.user'] = user
+      rescue => e
+        env['moguera.error'] = e
       end
 
       @app.call(env)

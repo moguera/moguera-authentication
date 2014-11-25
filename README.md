@@ -50,45 +50,67 @@ Server check
 
 ## Usage
 
-### Server
-sinatra sample
+### Use Rack Middleware
+A Rack middleware inserts a Moguera Authentication.
+
+example config.ru
 
 ```ruby
-require 'sinatra'
-require 'moguera/authentication'
+require 'rack/moguera_authentication'
+require 'server'
+require 'json'
 
-post '/login' do
-  begin
-    request_token = Moguera::Authentication.new(request.env['HTTP_AUTHORIZATION'])
-    user = request_token.authenticate! do |key|
-      key_to_secret = 'secret'
+map '/' do
+  run Public
+end
 
-      Moguera::Authentication::Request.new(
-        access_key: key,
-        secret_access_key: key_to_secret,
-        request_path: request.env['REQUEST_PATH'],
-        content_type: request.content_type,
-        http_date: request.env['HTTP_DATE'],
-        request_method: request.request_method
-      )
+map '/login' do
+  # Add Rack::MogueraAuthentication somewhere in your rack stack
+  use Rack::MogueraAuthentication do |request_access_key|
+
+    # Search a secret_access_key by a request_access_key
+    # # example credential.json
+    # #=> {"user01:"secret"}
+    user = JSON.parse(File.open('credential.json', &:read))
+    user[key]
+  end
+  
+  return Private
+end
+```
+
+example server.rb
+
+```ruby
+require 'sinatra/base'
+
+class Public < Sinatra::Base
+  post '/' do
+    [200, {"Content-Type"=>"text/plain"}, ["Hello World!"]]
+  end
+end
+
+class Private < Sinatra::Base
+  post '/hello' do
+    validate_user!
+    [200, {"Content-Type"=>"text/plain"}, ["Hello #{env['moguera.user'].access_key}!"]]
+  end
+
+  private
+
+  def validate_user!
+    case e = env['moguera.error']
+      when Moguera::Authentication::ParameterInvalid
+        halt 400, "400 Bad Request: #{e.message}\n"
+      when Moguera::Authentication::AuthenticationError
+        halt 401, "401 Unauthorized: #{e.message}\n"
     end
-    return user.access_key
-  rescue Moguera::Authentication::ParameterInvalid => e
-    halt 400, "400 Bad Request: #{e.message}\n"
-  rescue Moguera::Authentication::AuthenticationError => e
-    params = %w(
-      token access_key secret_access_key http_date
-      request_method request_path content_type
-    )
-    msg = ["request_tooken: #{e.request_token}"]
-    msg << params.map {|k| "server_#{k}: #{e.server_request.send(k)}" }
-    logger.error msg * "\n"
-    halt 401, "401 Unauthorized: #{e.message}\n"
   end
 end
 ```
 
 ### Cilent
+
 rest-client sample
 
 ```ruby
@@ -102,18 +124,20 @@ url = ARGV[0]
 abort "Usage: ruby #{__FILE__} http://localhost:4567/login" unless url
 
 request_path = URI.parse(url).path
-request_method = 'POST'
+request_path = '/' if request_path.empty?
 http_date = Time.now.httpdate
 content_type = 'application/json'
 
-request = Moguera::Authentication::Request.new(
-    access_key: 'apikey',
+params = {
+    access_key: 'user01',
     secret_access_key: 'secret',
     request_path: request_path,
-    request_method: request_method,
-    http_date: http_date,
-    content_type: content_type
-)
+    request_method: 'POST',
+    content_type: content_type,
+    http_date: http_date
+}
+
+request = Moguera::Authentication::Request.new(params)
 
 headers = {
     Authorization: request.token,
@@ -121,14 +145,11 @@ headers = {
     Date: http_date
 }
 
-payload = { key: 'value' }.to_json
-
 begin
-  res = RestClient.post(url, payload, headers)
-  puts res.code
+  res = RestClient.post(url, {key:'value'}.to_json, headers)
   puts res.body
 rescue => e
-  abort e.response
+  puts e.message
 end
 ```
 

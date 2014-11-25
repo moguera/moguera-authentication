@@ -5,6 +5,9 @@ Simple REST API Authentication.
 [![Build Status](https://travis-ci.org/moguera/moguera-authentication.svg)](https://travis-ci.org/moguera/moguera-authentication)
 [![Coverage Status](https://coveralls.io/repos/moguera/moguera-authentication/badge.png?branch=master)](https://coveralls.io/r/moguera/moguera-authentication?branch=master)
 
+## Requirements
+
+Ruby 2.1+
 
 ## Installation
 

@@ -1,7 +1,7 @@
 require 'sinatra/base'
 
 class Public < Sinatra::Base
-  post '/' do
+  post '/hello' do
     [200, {"Content-Type"=>"text/plain"}, ["Hello World!"]]
   end
 end

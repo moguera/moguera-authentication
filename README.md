@@ -50,7 +50,7 @@ Server check
 
 ## Usage
 
-### Use Rack Middleware
+### Server
 A Rack middleware inserts a Moguera Authentication.
 
 example config.ru
@@ -70,7 +70,7 @@ map '/login' do
 
     # Search a secret_access_key by a request_access_key
     # # example credential.json
-    # #=> {"user01:"secret"}
+    # #=> {"user01":"secret"}
     user = JSON.parse(File.open('credential.json', &:read))
     user[key]
   end
@@ -85,7 +85,7 @@ example server.rb
 require 'sinatra/base'
 
 class Public < Sinatra::Base
-  post '/' do
+  post '/hello' do
     [200, {"Content-Type"=>"text/plain"}, ["Hello World!"]]
   end
 end
@@ -151,6 +151,25 @@ begin
 rescue => e
   puts e.message
 end
+```
+
+### Quick Run
+
+server
+
+```
+$ cd samaple
+$ rackup
+```
+
+client
+
+```
+$ ./client.rb http://localhost:9292/hello
+Hello World!
+
+$ ./client.rb http://localhost:9292/login/hello
+Hello user01!
 ```
 
 ## Contributing

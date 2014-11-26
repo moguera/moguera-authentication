@@ -38,5 +38,5 @@ begin
   res = RestClient.post(url, {key:'value'}.to_json, headers)
   puts res.body
 rescue => e
-  puts e.message
+  puts e.response
 end

@@ -15,11 +15,16 @@ class Private < Sinatra::Base
   private
 
   def validate_user!
-    case e = env['moguera.error']
-      when Moguera::Authentication::ParameterInvalid
-        halt 400, "400 Bad Request: #{e.message}\n"
-      when Moguera::Authentication::AuthenticationError
-        halt 401, "401 Unauthorized: #{e.message}\n"
+    if e = env['moguera.error']
+      $stderr.puts e.message
+      case e
+        when Moguera::Authentication::ParameterInvalid
+          halt 400, "400 Bad Request: #{e.message}\n"
+        when Moguera::Authentication::AuthenticationError
+          halt 401, "401 Unauthorized: #{e.message}\n"
+        else
+          halt 500, "500 Internal Server Error\n"
+      end
     end
   end
 end

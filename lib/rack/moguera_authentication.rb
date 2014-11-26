@@ -40,7 +40,7 @@ module Rack
       {
           access_key: key,
           secret_access_key: secret,
-          request_path: env['REQUEST_PATH'],
+          request_path: env['PATH_INFO'],
           request_method: env['REQUEST_METHOD'],
           content_type: env['CONTENT_TYPE'],
           http_date: env['HTTP_DATE']

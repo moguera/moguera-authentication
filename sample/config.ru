@@ -11,7 +11,8 @@ end
 
 map '/login' do
   use Rack::MogueraAuthentication do |key|
-    user = JSON.parse(File.open('credential.json', &:read))
+    file = File.join(File.expand_path(File.dirname(__FILE__)), 'credential.json')
+    user = JSON.parse(File.open(file, &:read))
     user[key]
   end
 

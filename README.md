@@ -71,7 +71,8 @@ map '/login' do
     # Search a secret_access_key by a request_access_key
     # # example credential.json
     # #=> {"user01":"secret"}
-    user = JSON.parse(File.open('credential.json', &:read))
+    file = File.join(File.expand_path(File.dirname(__FILE__)),'credential.json')
+    user = JSON.parse(File.open(file, &:read))
     user[key]
   end
   
@@ -99,11 +100,16 @@ class Private < Sinatra::Base
   private
 
   def validate_user!
-    case e = env['moguera.error']
-      when Moguera::Authentication::ParameterInvalid
-        halt 400, "400 Bad Request: #{e.message}\n"
-      when Moguera::Authentication::AuthenticationError
-        halt 401, "401 Unauthorized: #{e.message}\n"
+    if e = env['moguera.error']
+      $stderr.puts e.message
+      case e
+        when Moguera::Authentication::ParameterInvalid
+          halt 400, "400 Bad Request: #{e.message}\n"
+        when Moguera::Authentication::AuthenticationError
+          halt 401, "401 Unauthorized: #{e.message}\n"
+        else
+          halt 500, "500 Internal Server Error\n"
+      end
     end
   end
 end
@@ -158,17 +164,16 @@ end
 server
 
 ```
-$ cd samaple
-$ rackup
+$ rackup sample/config.ru
 ```
 
 client
 
 ```
-$ ./client.rb http://localhost:9292/hello
+$ sample/client.rb http://localhost:9292/hello
 Hello World!
 
-$ ./client.rb http://localhost:9292/login/hello
+$ sample/client.rb http://localhost:9292/login/hello
 Hello user01!
 ```
 

@@ -75,7 +75,7 @@ map '/login' do
     user[key]
   end
   
-  return Private
+  run Private
 end
 ```
 
@@ -111,7 +111,7 @@ end
 
 ### Cilent
 
-rest-client sample
+example rest-client
 
 ```ruby
 require 'moguera/authentication'

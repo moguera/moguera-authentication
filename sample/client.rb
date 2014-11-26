@@ -13,18 +13,20 @@ url = ARGV[0]
 abort "Usage: ruby #{__FILE__} http://localhost:4567/login" unless url
 
 request_path = URI.parse(url).path
-request_method = 'POST'
+request_path = '/' if request_path.empty?
 http_date = Time.now.httpdate
 content_type = 'application/json'
 
-request = Moguera::Authentication::Request.new(
-    access_key: 'apikey',
+params = {
+    access_key: 'user01',
     secret_access_key: 'secret',
     request_path: request_path,
-    request_method: request_method,
-    http_date: http_date,
-    content_type: content_type
-)
+    request_method: 'POST',
+    content_type: content_type,
+    http_date: http_date
+}
+
+request = Moguera::Authentication::Request.new(params)
 
 headers = {
     Authorization: request.token,
@@ -32,12 +34,9 @@ headers = {
     Date: http_date
 }
 
-payload = { key: 'value' }.to_json
-
 begin
-  res = RestClient.post(url, payload, headers)
-  puts res.code
+  res = RestClient.post(url, {key:'value'}.to_json, headers)
   puts res.body
 rescue => e
-  abort e.response
+  puts e.response
 end

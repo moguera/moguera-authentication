@@ -1,7 +1,7 @@
 RSpec.shared_context 'prepare_auth' do
   let(:access_key) { 'apikey' }
   let(:secret_access_key) { 'secret' }
-  let(:request_path) { 'path' }
+  let(:request_path) { '/path' }
   let(:request_method) { 'POST' }
   let(:content_type) { 'application/json' }
   let(:now) { Timecop.freeze(Time.now) }

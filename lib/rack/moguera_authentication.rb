@@ -19,14 +19,14 @@ module Rack
     def call(env)
       begin
         request_token = Moguera::Authentication.new(env['HTTP_AUTHORIZATION'])
-        user = request_token.authenticate! do |key|
+        auth = request_token.authenticate! do |key|
           secret = @secret_block.call(key)
           params = build_parameter(key, secret, env)
 
           Moguera::Authentication::Request.new(params)
         end
 
-        env['moguera.user'] = user
+        env['moguera.auth'] = auth
       rescue => e
         env['moguera.error'] = e
       end
@@ -40,7 +40,7 @@ module Rack
       {
           access_key: key,
           secret_access_key: secret,
-          request_path: env['PATH_INFO'],
+          request_path: env['REQUEST_PATH'],
           request_method: env['REQUEST_METHOD'],
           content_type: env['CONTENT_TYPE'],
           http_date: env['HTTP_DATE']

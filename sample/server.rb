@@ -9,7 +9,7 @@ end
 class Private < Sinatra::Base
   post '/hello' do
     validate_user!
-    [200, {"Content-Type"=>"text/plain"}, ["Hello #{env['moguera.user'].access_key}!"]]
+    [200, {"Content-Type"=>"text/plain"}, ["Hello #{env['moguera.auth'].access_key}!"]]
   end
 
   private

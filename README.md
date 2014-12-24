@@ -30,10 +30,10 @@ Use paramas
 
 - access_key
 - secret_access_key
-- request_pah
-- request_method
-- http_date
-- content_type
+- request_path ```(env['REQUEST_PATH'])```
+- request_method ```(env['REQUEST_METHOD'])```
+- http_date ```(env['HTTP_DATE'])```
+- content_type ```(env['CONTENT_TYPE'])```
 
 ```ruby
 string_to_isgn = access_key + request_path + request_method + http_date + conetnt_type
@@ -73,7 +73,7 @@ map '/login' do
     # #=> {"user01":"secret"}
     file = File.join(File.expand_path(File.dirname(__FILE__)),'credential.json')
     user = JSON.parse(File.open(file, &:read))
-    user[key]
+    user[request_access_key]
   end
   
   run Private
@@ -94,7 +94,7 @@ end
 class Private < Sinatra::Base
   post '/hello' do
     validate_user!
-    [200, {"Content-Type"=>"text/plain"}, ["Hello #{env['moguera.user'].access_key}!"]]
+    [200, {"Content-Type"=>"text/plain"}, ["Hello #{env['moguera.auth'].access_key}!"]]
   end
 
   private

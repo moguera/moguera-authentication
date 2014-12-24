@@ -11,7 +11,8 @@ describe Rack::MogueraAuthentication do
     {
         'HTTP_AUTHORIZATION' => request_token,
         'CONTENT_TYPE' => content_type,
-        'HTTP_DATE' => http_date
+        'HTTP_DATE' => http_date,
+        'REQUEST_PATH' => request_path
     }
   }
 
@@ -24,14 +25,14 @@ describe Rack::MogueraAuthentication do
       expect(last_response.status).to eq 200
       expect(last_response.body).to eq 'test'
 
-      expect(last_request.env['moguera.user'].token).to eq request_token
-      expect(last_request.env['moguera.user'].token_prefix).to eq 'MOGUERA'
-      expect(last_request.env['moguera.user'].access_key).to eq access_key
-      expect(last_request.env['moguera.user'].secret_access_key).to eq secret_access_key
-      expect(last_request.env['moguera.user'].http_date).to eq http_date
-      expect(last_request.env['moguera.user'].request_method).to eq request_method
-      expect(last_request.env['moguera.user'].request_path).to eq request_path
-      expect(last_request.env['moguera.user'].content_type).to eq content_type
+      expect(last_request.env['moguera.auth'].token).to eq request_token
+      expect(last_request.env['moguera.auth'].token_prefix).to eq 'MOGUERA'
+      expect(last_request.env['moguera.auth'].access_key).to eq access_key
+      expect(last_request.env['moguera.auth'].secret_access_key).to eq secret_access_key
+      expect(last_request.env['moguera.auth'].http_date).to eq http_date
+      expect(last_request.env['moguera.auth'].request_method).to eq request_method
+      expect(last_request.env['moguera.auth'].request_path).to eq request_path
+      expect(last_request.env['moguera.auth'].content_type).to eq content_type
 
     end
 

@@ -31,10 +31,10 @@ describe Moguera::Authentication do
     end
 
     describe 'Invalid token' do
-      it 'should be raise AuthenticationError with missing request token message' do
+      it 'should be raise RequestTokenRequired with missing request token message' do
         expect {
           Moguera::Authentication.new
-        }.to raise_error(Moguera::Authentication::AuthenticationError, 'Missing request token.')
+        }.to raise_error(Moguera::Authentication::RequestTokenRequired, 'Missing request token.')
       end
 
       it 'should be raise AuthenticationError with invalid token message' do

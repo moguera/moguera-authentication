@@ -12,8 +12,11 @@ end
 map '/login' do
   use Rack::MogueraAuthentication do |key|
     file = File.join(File.expand_path(File.dirname(__FILE__)), 'credential.json')
-    user = JSON.parse(File.open(file, &:read))
-    user[key]
+    secret_key = JSON.parse(File.open(file, &:read))[key]
+
+    raise Moguera::Authentication::UserNotFound unless secret_key
+
+    secret_key
   end
 
   run Private

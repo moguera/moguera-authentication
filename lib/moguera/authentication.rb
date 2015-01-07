@@ -7,7 +7,7 @@ module Moguera
     attr_accessor :allow_time_interval
 
     def initialize(request_token = nil)
-      raise AuthenticationError, 'Missing request token.' unless request_token
+      raise RequestTokenRequired, 'Missing request token.' unless request_token
 
       @request_token = request_token
       @allow_time_interval = allow_time_interval || 600

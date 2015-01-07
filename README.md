@@ -72,8 +72,13 @@ map '/login' do
     # # example credential.json
     # #=> {"user01":"secret"}
     file = File.join(File.expand_path(File.dirname(__FILE__)),'credential.json')
-    user = JSON.parse(File.open(file, &:read))
-    user[request_access_key]
+    secret_key = JSON.parse(File.open(file, &:read))[request_access_key]
+
+    unless secret_key
+      raise Moguera::Authentication::UserNotFound, "access_key: " + request_access_key
+    end
+
+    secret_key
   end
   
   run Private
@@ -103,10 +108,13 @@ class Private < Sinatra::Base
     if e = env['moguera.error']
       $stderr.puts e.message
       case e
-        when Moguera::Authentication::ParameterInvalid
+        when Moguera::Authentication::ParameterInvalid,
+             Moguera::Authentication::RequestTokenRequired
           halt 400, "400 Bad Request: #{e.message}\n"
         when Moguera::Authentication::AuthenticationError
           halt 401, "401 Unauthorized: #{e.message}\n"
+        when Moguera::Authentication::UserNotFound
+          halt 404, "404 Not Found: #{e.message}\n"
         else
           halt 500, "500 Internal Server Error\n"
       end

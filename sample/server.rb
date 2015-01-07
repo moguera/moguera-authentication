@@ -18,10 +18,13 @@ class Private < Sinatra::Base
     if e = env['moguera.error']
       $stderr.puts e.message
       case e
-        when Moguera::Authentication::ParameterInvalid
+        when Moguera::Authentication::ParameterInvalid,
+             Moguera::Authentication::RequestTokenRequired
           halt 400, "400 Bad Request: #{e.message}\n"
         when Moguera::Authentication::AuthenticationError
           halt 401, "401 Unauthorized: #{e.message}\n"
+        when Moguera::Authentication::UserNotFound
+          halt 404, "404 Not Found: #{e.message}\n"
         else
           halt 500, "500 Internal Server Error\n"
       end

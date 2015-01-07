@@ -10,5 +10,11 @@ module Moguera
 
     class BlockRequired < StandardError
     end
+
+    class RequestTokenRequired < StandardError
+    end
+
+    class UserNotFound < StandardError
+    end
   end
 end

@@ -19,9 +19,9 @@ module Rack
     def call(env)
       begin
         request_token = Moguera::Authentication.new(env['HTTP_AUTHORIZATION'])
-        auth = request_token.authenticate! do |key|
-          secret = @secret_block.call(key)
-          params = build_parameter(key, secret, env)
+        auth = request_token.authenticate! do |access_key|
+          secret_access_key = @secret_block.call(access_key)
+          params = build_parameter(access_key, secret_access_key, env)
 
           Moguera::Authentication::Request.new(params)
         end
@@ -36,10 +36,10 @@ module Rack
 
     private
 
-    def build_parameter(key, secret, env)
+    def build_parameter(access_key, secret_access_key, env)
       {
-          access_key: key,
-          secret_access_key: secret,
+          access_key: access_key,
+          secret_access_key: secret_access_key,
           request_path: env['REQUEST_PATH'],
           request_method: env['REQUEST_METHOD'],
           content_type: env['CONTENT_TYPE'],

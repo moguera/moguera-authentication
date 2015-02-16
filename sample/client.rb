@@ -4,13 +4,16 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), %w(.. lib)))
 
 require 'moguera/authentication'
-require 'rest-client'
+require 'httpclient'
 require 'time'
 require 'json'
 require 'uri'
 
 url = ARGV[0]
 abort "Usage: ruby #{__FILE__} http://localhost:4567/login" unless url
+
+http_client = HTTPClient.new
+http_client.debug_dev = STDERR
 
 request_path = URI.parse(url).path
 request_path = '/' if request_path.empty?
@@ -29,14 +32,10 @@ params = {
 request = Moguera::Authentication::Request.new(params)
 
 headers = {
-    Authorization: request.token,
-    content_type: content_type,
-    Date: http_date
+    'Authorization' => request.token,
+    'Content-Type' => content_type,
+    'Date' => http_date
 }
 
-begin
-  res = RestClient.post(url, {key:'value'}.to_json, headers)
-  puts res.body
-rescue => e
-  puts e.response
-end
+response = http_client.post(url, {key:'value'}.to_json, headers)
+puts response.body

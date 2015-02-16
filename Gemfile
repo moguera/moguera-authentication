@@ -5,15 +5,10 @@ gemspec
 
 group :test do
   gem 'timecop'
-  gem 'pry'
+  gem 'pry', '< 0.10.0'
   gem 'pry-byebug'
   gem 'simplecov'
   gem 'simplecov-rcov'
   gem 'coveralls'
   gem 'rack-test'
-end
-
-group :development do
-  gem 'rest-client'
-  gem 'sinatra'
 end

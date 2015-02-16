@@ -125,46 +125,27 @@ end
 
 ### Cilent
 
-example rest-client
+example client-faraday.rb
 
 ```ruby
-require 'moguera/authentication'
-require 'rest-client'
-require 'time'
-require 'json'
-require 'uri'
+require 'faraday/moguera_authentication'
 
 url = ARGV[0]
-abort "Usage: ruby #{__FILE__} http://localhost:4567/login" unless url
+abort "Usage: ruby #{__FILE__} http://localhost:9292/login/hello" unless url
 
-request_path = URI.parse(url).path
-request_path = '/' if request_path.empty?
-http_date = Time.now.httpdate
-content_type = 'application/json'
+access_key = 'user01'
+secret_access_key = 'secret'
 
-params = {
-    access_key: 'user01',
-    secret_access_key: 'secret',
-    request_path: request_path,
-    request_method: 'POST',
-    content_type: content_type,
-    http_date: http_date
-}
-
-request = Moguera::Authentication::Request.new(params)
-
-headers = {
-    Authorization: request.token,
-    content_type: content_type,
-    Date: http_date
-}
-
-begin
-  res = RestClient.post(url, {key:'value'}.to_json, headers)
-  puts res.body
-rescue => e
-  puts e.message
+conn = Faraday.new do |faraday|
+  faraday.use Faraday::MogueraAuthentication, access_key, secret_access_key
+  faraday.response :logger
+  faraday.adapter Faraday.default_adapter
 end
+
+payload = '{ "key" : "value" }'
+response = conn.post(url, payload, 'Content-Type' => 'application/json')
+
+puts response.body
 ```
 
 ### Quick Run
@@ -178,10 +159,10 @@ $ rackup sample/config.ru
 client
 
 ```
-$ sample/client.rb http://localhost:9292/hello
+$ sample/client-faraday.rb http://localhost:9292/hello
 Hello World!
 
-$ sample/client.rb http://localhost:9292/login/hello
+$ sample/client-faraday.rb http://localhost:9292/login/hello
 Hello user01!
 ```
 
@@ -195,6 +176,6 @@ Hello user01!
 
 ## Copyright
 
-Copyright (c) 2014 hiro-su.
+Copyright (c) 2015 hiro-su.
 
 MIT License
